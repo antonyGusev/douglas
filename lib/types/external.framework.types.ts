@@ -13,8 +13,9 @@ import {
   request,
   Mouse,
   devices,
+  ViewportSize
 } from 'playwright';
-import { test, TestInfo, expect } from '@playwright/test';
+import { test, TestInfo, defineConfig, PlaywrightTestConfig } from '@playwright/test';
 
 export interface IPage extends Page {}
 export interface IElementHandle extends ElementHandle {}
@@ -26,7 +27,7 @@ export interface ICookie extends Cookie {}
 export interface IAPIRequest extends APIRequest {}
 export interface IAPIResponse extends APIResponse {}
 export interface ITestInfo extends TestInfo {}
+export interface IPlaywrightTestConfig extends PlaywrightTestConfig {}
+export interface IViewportSize extends ViewportSize {}
 
-const pwExpect = expect;
-
-export { chromium, firefox, webkit, request, devices, test, pwExpect };
+export { chromium, firefox, webkit, request, devices, test, defineConfig };
