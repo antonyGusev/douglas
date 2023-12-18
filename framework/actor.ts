@@ -15,17 +15,6 @@ import {
   IUserAccountDataPageActions,
 } from './actions';
 
-// interface Actor
-//   extends MainPageActions,
-//     LoginPageActions,
-//     EmailActions,
-//     NewPasswordPageActions,
-//     UserAccountPageActions,
-//     UserAccountDataPageActions,
-//     ChangePasswordPageActions {}
-
-// class Actor {}
-
 class Actor {
   public onMainPage: IMainPageActions = new MainPageActions();
   public onLoginPage: ILoginPageActions = new LoginPageActions();
@@ -35,16 +24,6 @@ class Actor {
   public onUserAccountPage: IUserAccountPageActions = new UserAccountPageActions();
   public onUserAccountDataPage: IUserAccountDataPageActions = new UserAccountDataPageActions();
 }
-
-// applyMixins(Actor, [
-//   MainPageActions,
-//   LoginPageActions,
-//   EmailActions,
-//   NewPasswordPageActions,
-//   UserAccountPageActions,
-//   UserAccountDataPageActions,
-//   ChangePasswordPageActions,
-// ]);
 
 const I = new Actor();
 
