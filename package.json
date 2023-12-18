@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env npx playwright test",
+    "test": "cross-env MODE=SINGLE npx playwright test",
     "test:console:error": "cross-env LOG_LEVEL=ERROR npx playwright test",
     "test:console:info": "cross-env LOG_LEVEL=INFO npx playwright test",
     "test:console:verbose": "cross-env LOG_LEVEL=VERBOSE npx playwright test",
