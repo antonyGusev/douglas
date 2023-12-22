@@ -61,3 +61,21 @@ npm run report
 npm run delete:report
 
 ```
+
+## Notice
+
+After installing create .env file to store env variables for local running with such variables:
+
+```bash
+RUN_ENV=https://www.douglas.de./
+PASS=               # your password to email
+LOG_LEVEL=MUTE      # INFO, MUTE, VERBOSE, TECHNICAL, ERROR
+MODE=PARALLEL       # PARALLEL or SINGLE
+WORKERS=            # number
+RETRIES=            # number
+BROWSERS=chromium   # modern, chromium, firefox, webkit, mobile, mobile_chrome, mobile_safari, branded, branded_chrome, branded_edge, all
+HEADLESS=           # boolean
+TEST_TIMEOUT=       # number
+COOKIE_SET_TIMOUT=  # extended waiting "number"
+MAX_DIFF_PIX=       # difference in pixels for images comparisom "number"
+```
