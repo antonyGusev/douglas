@@ -5,10 +5,6 @@ import { pubsub } from '../helpers';
 import { BasePage } from '../base.components';
 import { pwLogging } from '../reporter';
 
-const launchOptions = {
-  headless: false,
-};
-
 interface InitialEntities {
   browser: IBrowser;
   currentPage: IPage;
@@ -33,7 +29,7 @@ class BrowserAdapter {
   }
 
   async init(): Promise<InitialEntities> {
-    this.browser = await chromium.launch(launchOptions);
+    this.browser = await chromium.launch();
     this.browserContext = await this.browser.newContext();
     this.currentPage = await this.browserContext.newPage();
 

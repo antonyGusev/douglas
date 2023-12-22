@@ -1,20 +1,26 @@
 import { provider } from '../framework';
 
-const { I } = provider.actor;
 const test = provider.test;
+
+const { Actor } = provider.actor;
 const { browser } = provider.packages;
-const { email, password } = provider.users.UsersLoginDetails.anton;
+const { Users } = provider.users;
+
+const { email, password } = Users.anton.credentials;
+const { name, surename } = Users.anton.personal;
 
 test.beforeEach('Open main page', async () => {
   await browser.goTo(process.env.RUN_ENV!);
 });
 
-test('DTC_007_Should_Not_Remember_User', async () => {
-  await I.onMainPage.selectCookies('Required');
-  await I.onMainPage.goToLoginPage();
-  await I.onLoginPage.enterUserCredentials({ optionToStay: 'notStayLogged', email, password });
+test('DTC_007_Should_Not_Remember_User', async ({}, testInfo) => {
+  const user = new Actor({name, surename, password, email, testInfo});
 
-  await I.onMainPage.shouldBeRemembered('false');
+  await user.onMainPage.selectCookies('Required');
+  await user.onMainPage.goToLoginPage();
+  await user.onLoginPage.enterUserCredentials({ optionToStay: 'notStayLogged', email, password });
+
+  await user.onMainPage.shouldBeRemembered('false');
 });
 
 test.afterEach(async ({}, testInfo) => {

@@ -1,18 +1,23 @@
-import { BaseElement } from '../base.elements';
+import { BaseElement, CanGetData } from '../base.elements';
 import { logMessage, logger } from '../helpers';
 import { pwLogging } from '../reporter';
 
+type TGetDataArgs = {type: 'image', path: string} | null;
+
 export interface ISVGElement {
-  getData(): Promise<string>;
+  getData(data: TGetDataArgs): Promise<string>;
 }
 
-export class SVGElement extends BaseElement implements ISVGElement {
+export class SVGElement extends CanGetData implements ISVGElement {
   constructor(selector: string, name: string) {
     super(selector, name);
   }
 
   @pwLogging
-  async getData(): Promise<any> {
+  async getData(data: TGetDataArgs): Promise<any> {
+    if (data && data.type === 'image') {
+      return super.getData(data);
+    }
     const currentElement = this.currentElement ?? (await this.initElement()).currentElement;
     logger.technical(logMessage(this, `getting data`));
 

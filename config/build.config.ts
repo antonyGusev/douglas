@@ -1,5 +1,9 @@
-import { IPlaywrightTestConfig, devices } from '../types';
+import { IPlaywrightTestConfig, devices } from '../lib';
 import { selectBrowser } from './select.browser';
+
+import os from 'os';
+
+const cpuCores = os.cpus();
 
 /**
  * Read environment variables from file.
@@ -16,11 +20,11 @@ export function buildConfig() {
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
     /* Retry on CI only */
-    retries: RETRIES || process.env.CI ? 2 : 1,
+    retries: +RETRIES || process.env.CI ? 2 : 1,
     /* Opt out of parallel tests on CI. */
     workers: process.env.CI ? 1 : 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    timeout: TEST_TIMEOUT || 90000,
+    timeout: +TEST_TIMEOUT || 90000,
     reporter: [
       [
         'allure-playwright',
@@ -34,7 +38,7 @@ export function buildConfig() {
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
       /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-      headless: HEADLESS || false,
+      headless: HEADLESS === 'true' ? true : false,
       trace: 'on-first-retry',
       video: 'on',
       screenshot: 'on',
@@ -63,11 +67,14 @@ export function buildConfig() {
 
   if (MODE === 'PARALLEL') {
     config.fullyParallel = true;
-    config.workers = WORKERS || '50%';
+    config.workers = +WORKERS || cpuCores.length / 3;
+  } else if (MODE === 'SINGLE') {
+    config.fullyParallel = false;
+    config.workers = 1;
   }
 
   if (BROWSERS) {
-    config.projects = selectBrowser();
+    config.projects = selectBrowser(BROWSERS);
   }
 
   return config as IPlaywrightTestConfig;

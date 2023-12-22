@@ -1,24 +1,29 @@
 import { provider } from '../framework';
 
-const { I } = provider.actor;
 const test = provider.test;
+
+const { Actor } = provider.actor;
 const { browser } = provider.packages;
-const { UsersLoginDetails } = provider.users;
-const { password } = UsersLoginDetails.anton;
+const { Users } = provider.users;
+
+const { email, password } = Users.anton.credentials;
+const { name, surename } = Users.anton.personal;
 
 test.beforeEach('Open main page', async () => {
   await browser.goTo(process.env.RUN_ENV!);
 });
 
-test('DTC_012_Show_Password_Button_Should_Unmask_By_Default_Masked_Password', async () => {
-  await I.onMainPage.selectCookies('Required');
-  await I.onMainPage.goToLoginPage();
+test('DTC_012_Show_Password_Button_Should_Unmask_By_Default_Masked_Password', async ({}, testInfo) => {
+  const user = new Actor({name, surename, password, email, testInfo});
 
-  await I.onLoginPage.enterUserCredentials({password});
-  await I.onLoginPage.verifyPasswordValue('default');
+  await user.onMainPage.selectCookies('Required');
+  await user.onMainPage.goToLoginPage();
+
+  await user.onLoginPage.enterUserCredentials({password});
+  await user.onLoginPage.verifyPasswordValue('default');
   
-  await I.onLoginPage.unmaskPassword();
-  await I.onLoginPage.verifyPasswordValue('unMasked');
+  await user.onLoginPage.unmaskPassword();
+  await user.onLoginPage.verifyPasswordValue('unMasked');
 });
 
 test.afterEach(async ({}, testInfo) => {

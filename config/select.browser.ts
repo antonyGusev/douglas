@@ -1,7 +1,5 @@
-import { IViewportSize } from '../types';
+import { IViewportSize } from '../lib';
 import { allBrowsers, brandedBrowsers, mobileBrowsers, modernBrowsers } from './browsers';
-
-const { BROWSERS } = process.env;
 
 type TBrowserProp = {
   name: string;
@@ -42,7 +40,14 @@ const browserNames = [
 ];
 
 function trimBrowsersList(browsers: string | undefined) {
+  const condition = browsers?.includes(' ') || browsers?.includes(',');
+
+  if (!condition) {
+    return [browsers]
+  }
+  
   const initialArr = browsers?.split(/(,\s|,|\s)/);
+
   const browsersArr = initialArr?.filter((br) => {
     for (const browser of browserNames) {
       if (br === browser) return br;
@@ -52,7 +57,7 @@ function trimBrowsersList(browsers: string | undefined) {
   return browsersArr;
 }
 
-export function selectBrowser(): TBrowserProp[] {
+export function selectBrowser(BROWSERS: string | undefined): TBrowserProp[] {
   const brArr: TBrowserProp[] = [];
 
   const browsersArr = trimBrowsersList(BROWSERS);

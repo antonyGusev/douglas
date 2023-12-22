@@ -1,5 +1,6 @@
-import { assert,  pwLogging } from '../../lib';
+import { ITestInfo, assert,  pwLogging } from '../../lib';
 import { IUserAccountPage, UserAccountPage } from '../pages/user.account.page';
+import { BaseActions } from './base.actions';
 
 const userAccountPage: IUserAccountPage = new UserAccountPage();
 
@@ -26,8 +27,11 @@ enum GO_TO_METHOD {
 
 type TGoToMethod = Partial<keyof typeof GO_TO_METHOD>;
 
-export class UserAccountPageActions implements IUserAccountPageActions{
-  constructor() {}
+export class UserAccountPageActions extends BaseActions implements IUserAccountPageActions{
+  
+  constructor(testInfo: ITestInfo) {
+    super(testInfo);
+  }
 
   @pwLogging
   async logOut() {

@@ -1,10 +1,10 @@
 import { browser, myMoment, MomentFormats, makeHash, test, EmailTypes } from '../lib';
-import { UsersLoginDetails } from '../test.data';
-import { I } from './actor';
+import { Users } from '../test.data';
+import { Actor } from './actor';
 
 const provider = {
   get actor() {
-    return { I };
+    return { Actor };
   },
   get test() {
     return test;
@@ -13,7 +13,7 @@ const provider = {
     return { browser, myMoment, MomentFormats, makeHash, EmailTypes };
   },
   get users() {
-    return { UsersLoginDetails };
+    return { Users };
   },
 };
 

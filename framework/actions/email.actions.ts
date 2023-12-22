@@ -1,4 +1,5 @@
-import { EmailHelper, EmailTypes, IEmailDataToGet, browser, logger, pwLogging } from '../../lib';
+import { EmailHelper, EmailTypes, IEmailDataToGet, ITestInfo, browser, logger, pwLogging } from '../../lib';
+import { BaseActions } from './base.actions';
 
 const emailHelper = new EmailHelper();
 
@@ -7,8 +8,11 @@ export interface IEmailActions {
   openAssignNewPasswordPage: (url: string) => Promise<void>;
 }
 
-export class EmailActions implements IEmailActions {
-  constructor() {}
+export class EmailActions extends BaseActions implements IEmailActions {
+  
+  constructor(testInfo: ITestInfo) {
+    super(testInfo);
+  }
 
   @pwLogging
   async getResetPasswordLink(emailConfigName: EmailTypes, necessaryData?: IEmailDataToGet) {
