@@ -64,7 +64,7 @@ npm run delete:report
 
 ## Notice
 
-After installing create .env file to store env variables for local running with such variables:
+After installing necessary things, create .env file to store env variables for local running with such variables:
 
 ```bash
 RUN_ENV=https://www.douglas.de./
