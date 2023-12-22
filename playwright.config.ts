@@ -1,4 +1,5 @@
-import { buildConfig, defineConfig } from './lib';
+import { defineConfig } from './lib';
+import { buildConfig } from './config';
 
 const config = buildConfig();
 

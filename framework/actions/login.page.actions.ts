@@ -1,6 +1,13 @@
-import { assert, pwLogging } from '../../lib';
-import { TEmail, TPassword, alertExclamationMarkHtml } from '../../test.data';
+import { FS, ITestInfo, assert, pwLogging } from '../../lib';
+import { TEmail, TPassword } from '../../test.data';
 import { ILoginPage, LoginPage } from '../pages/login.page';
+
+import { getComparator } from 'playwright-core/lib/utils';
+import { BaseActions } from './base.actions';
+
+const {MAX_DIFF_PIX} = process.env
+
+const comparator = getComparator('image/png');
 
 const loginPage: ILoginPage = new LoginPage();
 
@@ -21,8 +28,11 @@ type TEnterUserCredsArgs = { optionToStay?: 'stayLogged' | 'notStayLogged'; emai
 type TErrorMsg = 'Falsche Zugangsdaten' | 'Bitte überprüfe deine Angaben';
 type TPasswordValue = 'default' | 'unMasked';
 
-export class LoginPageActions implements ILoginPageActions {
-  constructor() {}
+export class LoginPageActions extends BaseActions implements ILoginPageActions {
+
+  constructor(testInfo: ITestInfo) {
+    super(testInfo);
+  }
 
   /** Providing argument "optionToStay", this method uses for log in purpose.
    *  Not providing "optionToStay" argument, method uses for testing login form.
@@ -71,15 +81,35 @@ export class LoginPageActions implements ILoginPageActions {
 
   @pwLogging
   async verifyErrorMessage(msg: TErrorMsg) {
-    const { mainContent } = await loginPage.getData({ mainContent: { loginForm: { detailsAlert: null } } });
-    const { detailsAlert } = mainContent.loginForm;
-    const {
-      mainContent: { loginForm },
-    } = await loginPage.getData({ mainContent: { loginForm: { detailsAlertIcon: null } } });
-    const { detailsAlertIcon } = loginForm;
+    const saveDetailsAlertSVG = `${this.testInfo.outputDir}/detailsAlertIcon.png`;
+    const saveEmailAlertSVG = `${this.testInfo.outputDir}/emailExclamationPoint.png`;
 
-    assert(detailsAlertIcon).isEqual(alertExclamationMarkHtml);
+    const { mainContent } = await loginPage.getData({
+      mainContent: {
+        loginForm: {
+          detailsAlert: null,
+          detailsAlertIcon: {type: 'image', path: saveDetailsAlertSVG},
+          emailExclamationPoint: {type: 'image', path: saveEmailAlertSVG},
+        },
+      },
+    });
+    const { detailsAlert, detailsAlertIcon, emailExclamationPoint } = mainContent.loginForm;
+
+    const emailAlertIconPath = 'test.data/benchmark.data.to.expect/svg.icons/email.alert.icon.png'
+    const detailsAlertIconPath = 'test.data/benchmark.data.to.expect/svg.icons/details.alert.icon.png'
+    const benchmarkEmailIcon = await FS.fileToBuffer(emailAlertIconPath);
+    const benchmarkDetailsIcon = await FS.fileToBuffer(detailsAlertIconPath);
+
+    const pixDiff = MAX_DIFF_PIX ? +MAX_DIFF_PIX : 70;
+
     assert(detailsAlert).isEqual(msg);
+    assert(comparator(benchmarkDetailsIcon, detailsAlertIcon, { maxDiffPixels: pixDiff })).isEqual(null)
+    assert(comparator(benchmarkEmailIcon, emailExclamationPoint, { maxDiffPixels: pixDiff })).isEqual(null)
+
+    await this.attachScreenShot([
+      {name: 'detailsAlertIcon', body: detailsAlertIcon as Buffer},
+      {name: 'emailExclamationPoint', body: emailExclamationPoint as Buffer},
+    ]);
   }
 
   @pwLogging

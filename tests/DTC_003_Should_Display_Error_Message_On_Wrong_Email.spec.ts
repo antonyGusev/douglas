@@ -1,22 +1,26 @@
 import { provider } from '../framework';
 
-const { I } = provider.actor;
 const test = provider.test;
-const { browser } = provider.packages;
-const { UsersLoginDetails } = provider.users;
 
-const user = UsersLoginDetails.anton;
+const { Actor } = provider.actor;
+const { browser } = provider.packages;
+const { Users } = provider.users;
+
+const { email, password } = Users.anton.credentials;
+const { name, surename } = Users.anton.personal;
 
 test.beforeEach('Open main page', async () => {
   await browser.goTo(process.env.RUN_ENV!);
 });
 
-test('DTC_004_Should_Display_Error_Message_On_Wrong_Email', async () => {
-  await I.onMainPage.selectCookies('Required');
-  await I.onMainPage.goToLoginPage();
-  await I.onLoginPage.enterUserCredentials({ email: 'wrong.email@gmail.com', password: user.password });
+test('DTC_004_Should_Display_Error_Message_On_Wrong_Email', async ({}, testInfo) => {
+  const user = new Actor({name, surename, password, email, testInfo});
 
-  await I.onLoginPage.verifyErrorMessage('Falsche Zugangsdaten');
+  await user.onMainPage.selectCookies('Required');
+  await user.onMainPage.goToLoginPage();
+  await user.onLoginPage.enterUserCredentials({ email: 'wrong.email@gmail.com', password: password });
+
+  await user.onLoginPage.verifyErrorMessage('Falsche Zugangsdaten');
 });
 
 test.afterEach(async ({}, testInfo) => {

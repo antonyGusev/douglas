@@ -1,41 +1,48 @@
 import { provider } from '../framework';
 
-const { I } = provider.actor;
 const test = provider.test;
+
+const { Actor } = provider.actor;
 const { browser, EmailTypes } = provider.packages;
-const { UsersLoginDetails } = provider.users;
+const { Users } = provider.users;
+
+const { email, password } = Users.anton.credentials;
+const { name, surename } = Users.anton.personal;
 
 const newPassword = '!qWerty0000';
-const {email, password} = UsersLoginDetails.anton;
 
 test.beforeEach('Open main page', async () => {
   await browser.goTo(process.env.RUN_ENV!);
 });
 
-test('DTC_002_Should_Reset_Password', async () => {
-  await I.onMainPage.selectCookies('All');
-  await I.onMainPage.goToLoginPage();
-  await I.onLoginPage.resetPasswordFor(email);
+let user: InstanceType<typeof Actor>;
 
-  const resetPassLink = 
-  await I.onEmail.getResetPasswordLink(EmailTypes.antonGmail);
-  await I.onEmail.openAssignNewPasswordPage(resetPassLink);
+test('DTC_002_Should_Reset_Password', async ({}, testInfo) => {
+  user = new Actor({ name, surename, password, email, testInfo });
 
-  await I.onNewPasswordPage.selectCookies('Required');
-  await I.onNewPasswordPage.setUpNewPassword(newPassword);
+  await user.onMainPage.selectCookies('All');
+  await user.onMainPage.goToLoginPage();
+  await user.onLoginPage.resetPasswordFor(email);
 
-  await I.onUserAccountPage.verifyPageTitle('Anton Husiev');
+  const resetPassLink =
+  await user.onEmail.getResetPasswordLink(EmailTypes.antonGmail);
+  await user.onEmail.openAssignNewPasswordPage(resetPassLink);
 
-  await I.onUserAccountPage.logOut();
-  await I.onLoginPage.enterUserCredentials({optionToStay: 'notStayLogged', email, password: newPassword});
+  await user.onNewPasswordPage.selectCookies('Required');
+  await user.onNewPasswordPage.setUpNewPassword(newPassword);
 
-  await I.onUserAccountPage.verifyPageTitle('Anton Husiev');
+  await user.onUserAccountPage.verifyPageTitle('Anton Husiev');
+
+  await user.onUserAccountPage.logOut();
+  await user.onLoginPage.enterUserCredentials({ optionToStay: 'notStayLogged', email, password: newPassword });
+
+  await user.onUserAccountPage.verifyPageTitle('Anton Husiev');
 });
 
 test.afterEach(async ({}, testInfo) => {
-  await I.onUserAccountPage.goTo('myData', 'usingLeftMenu');
-  await I.onUserAccountDataPage.goToEdit('password');
-  await I.onChangePasswordPage.setUpNewPassword(newPassword, password);
+  await user.onUserAccountPage.goTo('myData', 'usingLeftMenu');
+  await user.onUserAccountDataPage.goToEdit('password');
+  await user.onChangePasswordPage.setUpNewPassword(newPassword, password);
 
   await browser.saveVideo(testInfo);
   await browser.close();

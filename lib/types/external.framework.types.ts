@@ -13,7 +13,7 @@ import {
   request,
   Mouse,
   devices,
-  ViewportSize
+  ViewportSize,
 } from 'playwright';
 import { test, TestInfo, defineConfig, PlaywrightTestConfig } from '@playwright/test';
 

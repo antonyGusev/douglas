@@ -1,5 +1,6 @@
-import { assert, pwLogging } from '../../lib';
+import { ITestInfo, assert, pwLogging } from '../../lib';
 import { IUserAccountDataPage, UserAccountDataPage } from '../pages/user.account.data.page.ts';
+import { BaseActions } from './base.actions';
 
 const userAccountDataPage: IUserAccountDataPage = new UserAccountDataPage();
 
@@ -13,8 +14,11 @@ enum OPTIONS_TO_EDIT {
 }
 type TOptToEdit = Partial<keyof typeof OPTIONS_TO_EDIT>
 
-export class UserAccountDataPageActions implements IUserAccountDataPageActions {
-  constructor() {}
+export class UserAccountDataPageActions extends BaseActions implements IUserAccountDataPageActions {
+  
+  constructor(testInfo: ITestInfo) {
+    super(testInfo);
+  }
 
   @pwLogging
   async goToEdit(option: TOptToEdit) {

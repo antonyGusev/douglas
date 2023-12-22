@@ -1,4 +1,4 @@
-import { devices } from '../types';
+import { devices } from '../lib';
 
 /**
  *  Adding new browser to config don't forget to add it's name

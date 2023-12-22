@@ -1,8 +1,9 @@
-import { assert, browser, pwLogging } from '../../lib';
+import { ITestInfo, assert, browser, pwLogging } from '../../lib';
 import { allCookies, requiredCookies } from '../../test.data';
 import { IMainPage, MainPage } from '../pages/main.page';
+import { BaseActions } from './base.actions';
 
-const {COOKIE_SET_TIMOUT} = process.env
+const { COOKIE_SET_TIMOUT } = process.env;
 
 const mainPage: IMainPage = new MainPage();
 
@@ -17,10 +18,11 @@ export interface IMainPageActions {
 type TCookies = 'All' | 'Required';
 type TOptionToStay = 'true' | 'false';
 
-const remeberMeToBool = (str: string | undefined) => (str === 'true' ? true : false);
-
-export class MainPageActions implements IMainPageActions {
-  constructor() {}
+export class MainPageActions extends BaseActions implements IMainPageActions {
+  
+  constructor(testInfo: ITestInfo) {
+    super(testInfo);
+  }
 
   @pwLogging
   async goToLoginPage() {
@@ -48,8 +50,8 @@ export class MainPageActions implements IMainPageActions {
      *  Running in parallel mode increase this value in .env file to avoid flakynes.
      */
     if (cookies === 'All') {
-      const sleepTime = () => COOKIE_SET_TIMOUT ? +COOKIE_SET_TIMOUT : 2500;
-      
+      const sleepTime = () => (COOKIE_SET_TIMOUT ? +COOKIE_SET_TIMOUT : 2500);
+
       await browser.sleep(sleepTime());
     }
 
@@ -87,7 +89,7 @@ export class MainPageActions implements IMainPageActions {
     /**
      *  When user should not be remembered, "rememberMe" option returns undefined
      */
-    const isRememberedValue = (value: string | undefined) => value ? value : 'false';
+    const isRememberedValue = (value: string | undefined) => (value ? value : 'false');
     const value = isRememberedValue(isRemembered?.value);
 
     assert(value).isEqual(optionToStay);

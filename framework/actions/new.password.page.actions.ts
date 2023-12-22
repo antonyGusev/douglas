@@ -1,6 +1,7 @@
-import { pwLogging } from '../../lib';
+import { ITestInfo, pwLogging } from '../../lib';
 import { TPassword } from '../../test.data';
 import { INewPasswordPage, NewPasswordPage } from '../pages/new.password.page';
+import { BaseActions } from './base.actions';
 
 const newPasswordPage: INewPasswordPage = new NewPasswordPage();
 
@@ -11,8 +12,11 @@ export interface INewPasswordPageActions {
 
 type TCookies = 'All' | 'Required';
 
-export class NewPasswordPageActions implements INewPasswordPageActions {
-  constructor() {}
+export class NewPasswordPageActions extends BaseActions implements INewPasswordPageActions {
+  
+  constructor(testInfo: ITestInfo) {
+    super(testInfo);
+  }
 
   @pwLogging
   async selectCookies(cookies: TCookies) {

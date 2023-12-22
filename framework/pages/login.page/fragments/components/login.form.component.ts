@@ -28,18 +28,20 @@ export interface ILoginFormComponentClick {
 
 export interface ILoginFormComponentGetData {
   detailsAlert?: null;
-  detailsAlertIcon?: null;
+  detailsAlertIcon?: TGetDataArgsSVG;
   emailAlertHint?: null;
   passwordAlertHint?: null;
   passwordField?: TInputGetData;
+  emailExclamationPoint?: TGetDataArgsSVG;
 }
 
 export interface ILoginFormComponentResult {
   detailsAlert: string | boolean;
-  detailsAlertIcon: string | boolean;
+  detailsAlertIcon: string | boolean | Buffer;
   emailAlertHint: string | boolean;
   passwordAlertHint: string | boolean;
   passwordField: string | boolean;
+  emailExclamationPoint: string | boolean | Buffer;
 }
 
 export interface ILoginFormComponentIsVisible {
@@ -54,6 +56,8 @@ export interface ILoginFormComponent {
   getData(data: BaseFragmentValues): Promise<ILoginFormComponentResult>;
   isVisible(data: BaseFragmentValues): Promise<ILoginFormComponentIsVisible>;
 }
+
+type TGetDataArgsSVG = {type: 'image', path: string} | null;
 
 export class LoginFormComponent extends BaseFragment implements ILoginFormComponent {
   private detailsAlert: ITextElement;

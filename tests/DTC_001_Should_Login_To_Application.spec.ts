@@ -1,21 +1,26 @@
 import { provider } from '../framework';
 
-const { I } = provider.actor;
 const test = provider.test;
+
+const { Actor } = provider.actor;
 const { browser } = provider.packages;
-const { UsersLoginDetails } = provider.users;
-const { email, password } = UsersLoginDetails.anton;
+const { Users } = provider.users;
+
+const { email, password } = Users.anton.credentials;
+const { name, surename } = Users.anton.personal;
 
 test.beforeEach('Open main page', async () => {
   await browser.goTo(process.env.RUN_ENV!);
 });
 
-test.only('DTC_001_Should_Login_To_Application_With_Anton_Husiev_User', async () => {
-  await I.onMainPage.selectCookies('All');
-  await I.onMainPage.goToLoginPage();
-  await I.onLoginPage.enterUserCredentials({ optionToStay: 'notStayLogged', email, password });
+test('DTC_001_Should_Login_To_Application_With_Anton_Husiev_User', async ({}, testInfo) => {
+  const user = new Actor({name, surename, password, email, testInfo});
 
-  await I.onMainPage.shouldBeAuthorizedAs('Anton');
+  await user.onMainPage.selectCookies('All');
+  await user.onMainPage.goToLoginPage();
+  await user.onLoginPage.enterUserCredentials({ optionToStay: 'notStayLogged', email, password });
+
+  await user.onMainPage.shouldBeAuthorizedAs('Anton');
 });
 
 test.afterEach(async ({}, testInfo) => {
