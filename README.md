@@ -11,8 +11,8 @@ I've written this framework in BDD style using common patterns as Page Object an
 
 ```typescript
 test('DTC_008_Should_Set_All_Cookies', async () => {
-  await I.onMainPage.selectCookies('All');
-  await I.onMainPage.verifyCookiesIs('All');
+  await user.onMainPage.selectCookies('All');
+  await user.onMainPage.verifyCookiesIs('All');
 });
 ```
 
