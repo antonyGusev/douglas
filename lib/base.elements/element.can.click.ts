@@ -1,5 +1,5 @@
 import { logMessage, logger } from '../helpers';
-import { logging, pwLogging } from '../reporter';
+import { pwLogging } from '../reporter';
 import { BaseElement } from './base.element';
 
 export class CanClick extends BaseElement {
